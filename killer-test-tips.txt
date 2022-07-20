@@ -1,0 +1,88 @@
+TroubleShooting:
+------------------------
+
+
+Kubelet:
+- systemctl status kubelet
+- journalctl -u kubelet  => shows what is the issue
+- see the status and where its is running
+- hint: see config files nad copy the same from other running nodes and paste it
+
+
+
+certifiactes:
+---------------------
+- all the certificates related files will be available in /var/lib/kubelet/pki/
+- openssl commands (view /ecpiry dates/ renew certificates)
+openssl x509 -noout -text -in <crt name> | grep issuer | any 
+
+
+events(kill pods and get its events)
+=============================
+kubectl get events -A <optional>=> --sort-by=.metadata.CreationTimestamp
+killinh pod => kubectl delete pod
+killing container  => crictl rm <container-id>
+
+api-resources
+======
+kubectl api-resources -h 
+
+
+
+static-pod concept
+==================
+any files that is managed by kubelet is static-pod that means it will inside manifest folders
+
+
+
+running pod even on master
+=========================
+	  tolerations:                                  # add
+      - effect: NoSchedule                          # add
+        key: node-role.kubernetes.io/master
+		
+running only one instance of pod in all nodes:(podAntiAffinity concept pod bolocate- redis)
+========================
+      affinity:                                             # add
+        podAntiAffinity:                                    # add
+          requiredDuringSchedulingIgnoredDuringExecution:   # add
+          - labelSelector:                                  # add
+              matchExpressions:                             # add
+              - key: id                                     # add
+                operator: In                                # add
+                values:                                     # add
+                - very-important                            # add
+            topologyKey: kubernetes.io/hostname             # add
+			
+make env available in containers
+=========
+   env:                                                                          # add
+    - name: MY_NODE_NAME                                                          # add
+      valueFrom:                                                                  # add
+        fieldRef:                                                                 # add
+          fieldPath: spec.nodeName   
+		  
+		  
+		  
+To join worker nodes to master cluster
+==============================
+- creating tokem
+	kubeadm create token --print-join-command 
+
+- when asked to upgrade nodes
+	check kubeadm,kubectl,kubelet versions and ap-get install it 
+	
+	
+How to make busy box contains to run for some time
+==============
+containers:
+- args:
+  - sh
+  - c
+  - sleep 1d
+  
+ ====
+ service cidr 
+ apiserver file => - --service-cluster-ip-range
+ 
+ 

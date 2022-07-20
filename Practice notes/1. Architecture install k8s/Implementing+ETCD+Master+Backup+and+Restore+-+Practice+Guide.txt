@@ -1,0 +1,183 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Implementing ETCD Backup & Restore | Kubernetes                                        *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://rancher.com/blog/2019/2019-01-29-what-is-etcd/                                          *
+* https://www.redhat.com/en/topics/containers/what-is-etcd                                        *
+* https://etcd.io/docs/v3.4.0/dev-guide/interacting_v3/                                           *
+* https://github.com/etcd-io/etcd/                                                                *
+* https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/                     *
+* https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+a. We will test the ETCD Backup and Restore functionality.
+
+
+*********************************************************************************************
+
+1. PRE-REQ: Installing "etcdctl" client:
+----------------------------------------
+
+Ensure if "etcdctl" command line tool is available by running below command. 
+
+export ETCDCTL_API=3
+etcdctl version
+
+If not available, then you can do the same by following below steps.
+
+----------
+
+mv /tmp/etcd-download-test/etcdctl /usr/bin
+
+ETCD_VER=v3.4.14
+
+# choose either URL
+GOOGLE_URL=https://storage.googleapis.com/etcd
+GITHUB_URL=https://github.com/etcd-io/etcd/releases/download
+DOWNLOAD_URL=${GOOGLE_URL}
+
+rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+rm -rf /tmp/etcd-download-test && mkdir -p /tmp/etcd-download-test
+
+curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1
+rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+
+mv /tmp/etcd-download-test/etcdctl /usr/bin
+
+----------
+
+Referece: https://github.com/etcd-io/etcd/releases
+
+*********************************************************************************************
+
+
+1. Deploy sample Pod for testing:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl run nginx-pod --image=nginx
+
+
+*********************************************************************************************
+
+
+2. Backing up ETCD Database:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+2a. Set ETCDCTL_API version to 3:
+---------------------------------
+export ETCDCTL_API=3
+etcdctl version
+
+
+2b. Taking ETCD Backup:
+-----------------------
+etcdctl --endpoints=https://127.0.0.1:2379 \
+        --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+        --cert=/etc/kubernetes/pki/etcd/server.crt \
+        --key=/etc/kubernetes/pki/etcd/server.key \
+        snapshot save /opt/snapshot-pre-boot.db
+
+2c. ETCD Backup - Status:
+-------------------------
+etcdctl --write-out=table snapshot status /opt/snapshot-pre-boot.db
+
+
+
+*********************************************************************************************
+
+3. Delete Pod:
+--------------
+Delete sample Pod after taking backup. Plan is, when we "restore" ETCD DB, this Pod should be there.
+
+kubectl get pods
+kubectl delete pod nginx-pod
+kubectl get pods
+
+*********************************************************************************************
+
+
+4. Restoring ETCD DB:
+---------------------
+
+4a). 
+
+etcdctl  --data-dir /var/lib/etcd-from-backup \
+         snapshot restore /opt/snapshot-pre-boot.db
+
+---------------------------------------------------------------------------------------------
+
+ls -l /var/lib/etcd-from-backup/
+
+---------------------------------------------------------------------------------------------
+
+
+4b). 
+
+ETCD Pod (and other Kubernetes Components runs) as Static Pods in kube-system namespace. 
+
+You can update respective component configuration by updating YAML files in /etc/kubernetes/manifests/
+   
+To update new ETCD Data Directory location we need to update the ETCD Pod YAML file /etc/kubernetes/manifests/etcd.yaml
+
+
+cp /etc/kubernetes/manifests/etcd.yaml /tmp/etcd.yaml.bak
+
+vim /etc/kubernetes/manifests/etcd.yaml 
+--------------------
+   ...
+   ...
+   volumes:
+   ...
+   ...
+   - hostPath:
+       path: /var/lib/etcd-from-backup   #new-data-dir. In my case, I have already configured.
+       type: DirectoryOrCreate
+     name: etcd-data
+status: {}   
+
+/etc/kubernetes/pki/etcd
+
+4c). Wait for about 2/3 mins and check "etcd-master" Pod status:
+----------------------------------------------------------------   
+kubectl get pods -n kube-system | grep etcd
+
+# IF it is pending even after few minutes, try delete the etcd-master pod. Since this is "static pod", K8s will create from above etcd.yaml file
+kubectl delete pods etcd-master -n kube-system --grace-period=0 --force
+
+Wait for few mins and test the same.
+kubectl get pods -n kube-system | grep etcd
+
+
+*********************************************************************************************
+
+
+5. Validate:
+-------------
+
+5a). Ensure, nginx-pod created in above step 1 exist after we successful restore ETCD DB.
+-----------------------------------------------------------------------------------------
+kubectl get pod nginx-pod
+
+5b). Deploy another sample to ensure we are able to deploy new Pods after restoring ETCD DB.
+--------------------------------------------------------------------------------------------
+kubectl run redis-pod --image=redis
+
+kubectl get pod nginx-pod
+
+
+*********************************************************************************************

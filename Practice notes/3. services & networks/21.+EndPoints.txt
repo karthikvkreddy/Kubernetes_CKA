@@ -1,0 +1,75 @@
+***************************************************************************************************
+*                                                                                                 *
+* Exercise: EndPoints | Kubernetes                                                                 *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/          *
+* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/   *
+* https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker              *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will create the sample Deployment with three replicas.Meaning, this deployment will create three replicas of Pod instances.
+Each pod will get unique IP address. When we expose this Pod using Service object, it creates EndPoints with this Pod IPs that are back this Service.
+
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through EndPoints Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1: Create Sample Deployment:
+----------------------------------
+a. Create sample deployment with below configuration.
+
+Deployment Name: nginx-deploy
+Container Image: nginx
+Replicas: 3
+
+
+***************************************************************************************************
+
+
+TASK-2: Display:
+----------------
+a. Display Deployment
+b. Display Pods created by this Pods
+
+
+***************************************************************************************************
+
+
+TASK-3: Validate:
+-----------------
+a. Display Endpoints created by this deployment
+b. Ensure there are three IPs in the Endpoint object. Match them with three Pod IPs created by this deployment. They should be the same.
+
+
+***************************************************************************************************
+
+
+TASK-4: Cleanup:
+----------------
+a. Delete the Deployment
+b. Ensure Deployment is deleted
+c. Ensure Pods are deleted
+d. Ensure EndPoints related to this Deployment is deleted
+
+
+***************************************************************************************************
+

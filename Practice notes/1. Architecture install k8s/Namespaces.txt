@@ -1,0 +1,106 @@
+***************************************************************************************************
+*                                                                                                 *
+* EXERCISE: Namespace  | Kubernetes                                                               *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/                   *
+* https://kubernetes.io/docs/tasks/administer-cluster/namespaces-walkthrough/                     *
+* https://kubernetes.io/docs/tasks/administer-cluster/namespaces/                                 *
+* https://kubernetes.io/blog/2016/08/kubernetes-namespaces-use-cases-insights/                    *
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will create the new Namespace and deploy sample Pod in that new Namespace.
+
+
+PRE-REQ: 
+--------
+a. To successfully finish this exercise, It is important to go through Namespace Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+STEP-1: Displaying Existing Namespaces:
+---------------------------------------
+a. K8s Cluster will have few Namespaces before we create new one. Display the existing Namespaces inside the cluster.
+
+
+***************************************************************************************************
+
+
+STEP-2: Create new namespace:
+-----------------------------
+a. Create new NameSpace imperatively using "kubectl create..." command with below config.
+
+NameSpace Name: dev
+
+
+***************************************************************************************************
+
+
+STEP-3: Validate the NameSpace: 
+-------------------------------
+a. Display all Namespaces inside the K8s Cluster. Ensure "dev" Namespace is part of this output
+b. Display complete details of "dev" namespace.
+c. Display "dev" namespace and redirect the output to YAML format.
+d. Check to see if there are any Pods in "dev" namespace.
+
+
+***************************************************************************************************
+
+
+STEP-4: Deploy Pod in "dev" Namespace: 
+--------------------------------------
+a. Deploy sample "nginx-pod" in "dev" namespace by running "kubectl run..." command
+b. Display "nginx-pod" in the "dev" namespace
+c. Display the logs of "nginx-pod" in "dev" namespace
+d. Display the CPU and Memory usage of Pods in "dev" namespace
+
+
+***************************************************************************************************
+
+
+STEP-5: Deploy Pod in ALL Namespaces: 
+-------------------------------------
+a. Display Pods in ALL namespaces.
+b. Display CPU and Memory usages of Pods in ALL namespaces. Then Sort the output by CPU
+c. Display CPU and Memory usages of Pods in ALL namespaces. Then Sort the output by Memory
+
+
+***************************************************************************************************
+
+
+STEP-6: Setting default namespace:
+----------------------------------
+a. Set the "dev" namespace as default by running "kubectl config...."
+b. Deploy the redis-pod with "redis" image in dev namespace WITHOUT mentioning the "dev" namespace specifically.
+c. Display the Pods using "kubectl get pods". Ensure this command display Pods in "dev" namespace.
+
+
+***************************************************************************************************
+
+
+STEP-7: Delete the NameSpace:
+-----------------------------
+a. Delete the "nginx-pod, redis-pod" Pods in "Dev" namespace
+b. Delete the "dev" namespace
+c. Display all Namespaces. Ensure "dev" namespace is NOT shown in the output.
+
+
+***************************************************************************************************
+

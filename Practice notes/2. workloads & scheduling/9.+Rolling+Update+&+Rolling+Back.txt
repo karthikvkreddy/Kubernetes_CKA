@@ -1,0 +1,94 @@
+***************************************************************************************************
+*                                                                                                 *
+* EXERCISE: Rolling Update & Rolling Back  (Deployment ) | Kubernetes                             *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://cloud.google.com/kubernetes-engine/docs/how-to/updating-apps                            *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#checking-rollout-history-of-a-deployment
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-to-a-previous-revision
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+a. You will create deploy sample application. Next we will update deployment by setting new Image version.
+b. What if we incorrectly put Image version? we will "undo" rollout. You will also learn about rolling back.
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through Rolling Update & Rolling Back Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+***************************************************************************************************
+
+
+STEP-1: Create Deployment:
+--------------------------
+a. Create the deployment with below configuration using "kubectl create...." command.
+
+Deployment Name: nginx-deploy
+Container Image: nginx:1.18
+Replicas: 3
+
+
+***************************************************************************************************
+
+
+STEP-2: Validate the Deployment:
+--------------------------------
+a. Display "nginx-deploy" deployment. Ensure Container Image version is nginx "1.18"
+
+
+***************************************************************************************************
+
+STEP-3: Upgrading Deployment with new Image:
+--------------------------------------------
+a. Upgrade "nginx-deploy" deployment nginx version from 1.18 to 1.91 using "..set image..." command with "record" option on
+b. Wait for a minute and display roll-out status of "nginx-deploy" deployment.
+c. In case if it is "stuck", then display "roll-out history" of "nginx-deploy" deployment. 
+d. Identify Issue
+
+
+***************************************************************************************************
+
+
+STEP-4: Doing previous rollout "undo":
+--------------------------------------
+a. Undo previous upgrade using "..rollout undo..." command
+b. Ensure "nginx-deploy" is running with image version nginx "1.18"
+
+
+***************************************************************************************************
+
+
+STEP-5: Upgrading Deployment with new Image:
+--------------------------------------------
+a. Upgrade "nginx-deploy" deployment nginx version from 1.18 to 1.19 using "..set image..." command with "record" option on
+b. Wait for a minute and display roll-out status of "nginx-deploy" deployment.
+c. Display upgrade status by running "....rollout status..."
+d. Display "nginx-deploy" deployment and ensure it is running with image version nginx "1.19"
+
+
+***************************************************************************************************
+
+
+STEP-6: Delete Deployment:
+--------------------------
+a. Delete the "nginx-deploy" deployment. 
+b. Display Deployment, ReplicaSet and Pods. Ensure "nginx-deploy" Deployemnt is related. Also related ReplicaSet and Pods
+
+
+
+
+

@@ -1,0 +1,91 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Deployments | Kuberentes                                                               *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://www.redhat.com/en/topics/containers/what-is-kubernetes-deployment                       *                
+* https://cloud.google.com/kubernetes-engine/docs/concepts/deployment                             *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/                           *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment     *
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/                   *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#pausing-and-resuming-a-deployment
+*                                                                                                 *
+***************************************************************************************************
+
+In this exercise:
+------------------
+You will create the Deployment and then perform various activities that we perform every day.
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through Deployment Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+STEP-1: Create Deployment:
+--------------------------
+a. Create Deployment with below configuration using "kubectl create..." command
+
+Deployment Name: nginx-deploy
+Container Image: nginx
+Replicas: 3
+
+
+***************************************************************************************************
+
+
+STEP-2. Display/Validate Deployment:
+------------------------------------
+a. Display all deployments (in the default namespace)
+b. Display "nginx-deploy". Ensure "Ready" "3/3", and "Up-to-date" and "Available" is 3.
+c. Display "nginx-deploy" deployment with wide-output.
+d. Display complete details of "nginx-deploy" deployment using "...describe..." command
+
+e. Display the "nginx-deploy" details and redirect the output to "YAML" format
+f. Display the "nginx-deploy" details and redirect the output to "JSON" format
+
+g. Display Labels of "nginx-deploy" deployment
+
+h. Display ReplicaSet created by "nginx-deploy"
+i. Display Pods created by "nginx-deploy" 
+
+
+***************************************************************************************************
+
+STEP-3: Edit the Deployment:
+----------------------------
+a. Edit the "nginx-deploy" deployment by running "...edit..." command
+b. Update "replicas" count from 3 to 5 and save the file.
+c. Display "nginx-deploy" deployment. Ensure "Ready" "5/5", and "Up-to-date" and "Available" is 5.
+
+
+***************************************************************************************************
+
+STEP-4: Scale Down Applications:
+--------------------------------
+a. Scale down "nginx-deploy" replicas from 5 to 3 by running "...scale..." command.
+
+
+***************************************************************************************************
+
+
+STEP-5: Delete the Deployment:
+------------------------------
+a. Delete the "nginx-deploy" deployment. 
+b. Display Deployment, ReplicaSet and Pods. Ensure "nginx-deploy" Deployemnt is related. Also related ReplicaSet and Pods
+
+
+***************************************************************************************************
+
+

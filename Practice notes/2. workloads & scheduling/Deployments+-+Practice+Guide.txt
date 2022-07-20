@@ -1,0 +1,170 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Deployments | Kuberentes                                                               *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://www.redhat.com/en/topics/containers/what-is-kubernetes-deployment                       *                
+* https://cloud.google.com/kubernetes-engine/docs/concepts/deployment                             *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/                           *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment     *
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/                   *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#pausing-and-resuming-a-deployment
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+
+1. Creating Deployment Declaratively (Using YAML file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# nginx-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.18
+        ports:
+        - containerPort: 80
+
+
+Deploying
+---------
+kubectl apply -f nginx-deploy.yaml
+# 
+kubectl create -f nginx-deploy.yaml
+
+
+***************************************************************************************************
+
+
+2. Creating Deployment "Imperatively" (from command line):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl create deployment NAME --image=[IMAGE-NAME] --replicas=[NUMBER]
+
+
+For dry-run: It tests to ensure were there any issues. Will NOT create the Object:
+----------------------------------------------------------------------------------
+kubectl create deployment NAME --image=[IMAGE-NAME] --replicas=[NUMBER] --dry-run=client
+
+Ex:
+kubectl create deployment redis-deploy --image=redis --replicas=3 --dry-run=client
+
+Exporting Dry-run output to YAML format:
+----------------------------------------
+kubectl create deployment nginx-deploy --image=nginx --replicas=2 --dry-run=client -o yaml
+
+Ex:
+kubectl create deployment redis-deploy --image=redis --replicas=3 --dry-run=client -o yaml
+kubectl create deployment redis-deploy --image=redis --replicas=3 --dry-run=client -o yaml > redis-deploy.yaml
+
+CKA/CKAD TIP: 
+-------------
+Due to time sensitive in the Exam, It is better to generate to Deployment YAML using above command.
+Instead of writing complete Deployment YAML. It saves lot of time.
+
+
+***************************************************************************************************
+
+
+3. Displaying Deployment
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl get deploy <NAME>
+kubectl get deploy <NAME> -o wide
+kubectl get deploy <NAME> -o yaml
+
+kubectl describe deploy <NAME>
+
+
+***************************************************************************************************
+
+
+4. Print Details of Pod Created by this Deployment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get pods --show-labels
+kubectl get pods -l [LABEL]
+
+EX: kubectl get pods -l app=nginx-app
+
+
+***************************************************************************************************
+
+
+5. Print Details of ReplicaSet Created by this Deployment:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get rs --show-labels
+kubectl get rs -l [LABEL]
+
+EX: kubectl get rs -l app=nginx-app
+
+
+***************************************************************************************************
+
+
+6. Scaling Applications:
+~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl scale deploy [DEPLOYMENT-NAME] --replicas=[COUNT]     # Update the replica-count to 5
+
+
+***************************************************************************************************
+
+
+7. Edit the Deployment:
+~~~~~~~~~~~~~~~~~~~~~~~
+kubectl edit deploy [DEPLOYMENT-NAME]
+
+
+***************************************************************************************************
+
+
+8. Running operations directly on the YAML file:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SYNTAX: kubectl [OPERATION] –f [FILE-NAME.yaml]
+
+kubectl get –f [FILE-NAME.yaml]
+kubectl describe –f [FILE-NAME.yaml]
+kubectl edit –f [FILE-NAME.yaml]
+kubectl delete –f [FILE-NAME.yaml]
+kubectl create –f [FILE-NAME.yaml]
+
+
+
+***************************************************************************************************
+
+
+9. Delete the Deployment:
+~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl delete deploy <NAME>
+
+kubectl get deploy
+kubectl get rs
+kubectl get pods
+
+
+***************************************************************************************************
+
+

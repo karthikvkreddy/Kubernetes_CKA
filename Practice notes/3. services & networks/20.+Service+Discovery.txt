@@ -1,0 +1,62 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Service Discovery | Kubernetes                                                         *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://cloud.google.com/kubernetes-engine/docs/concepts/service-discovery                      *
+* https://platform9.com/blog/kubernetes-service-discovery-principles-in-practice/                 *
+* https://github.com/kubernetes/dns/blob/master/docs/specification.md                             *
+* https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/                        *
+* https://www.digitalocean.com/community/tutorials/an-introduction-to-the-kubernetes-dns-service  *
+* https://sysdig.com/blog/understanding-how-kubernetes-services-dns-work/                         *  
+* https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns             *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+First, you will deploy the sample application and expose it within kubernetes cluster using Cluster Service.
+Next, you will deploy testing pod from where we will discover the above Service from inside this test Pod.
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through Service Discovery Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+TASK-1. Deploy Pod and expose it:
+---------------------------------
+a. Deploy Pod and expose it within the cluster
+b. Display Pod and Service to validate it is created as per your requirement.
+
+
+***************************************************************************************************
+
+
+TASK-2. Validate:
+------------------
+a. Validate Service Discover by deploying sample Pod. For example, you can run nslookup the above Service from inside this sample Pod.
+b. Ensure Service Name resolves to IP address
+
+
+***************************************************************************************************
+
+
+TASK-3. Cleanup:
+----------------
+a. Delete the Sample Pods and Services
+b. Ensuring Pods and Services are deleted successfully
+
+
+***************************************************************************************************

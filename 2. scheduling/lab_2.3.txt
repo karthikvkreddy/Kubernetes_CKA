@@ -1,0 +1,8 @@
+1. check if the node contains taints
+2. create a taints onn node node01 with key=spray , value=mortien and effect = NoSchedule
+3. modify te taints on above node
+4. create a pod with image= nginx and check its state ===> pending
+5. reason why it is in pending ?
+6. intaint the node wihich was created before.
+7. check the state of pos whch was not schedue because of taint & toleration effect.
+

@@ -1,0 +1,125 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Logging | Kubernetes                                                                   *
+*                                                                                                 *
+* Author: Srinath Challa | Kuberenetes SME | Udemy                                                *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/cluster-administration/logging/                             *
+* https://kubernetes.io/docs/concepts/cluster-administration/logging/#streaming-sidecar-container *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/                                     *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/logging-stackdriver/#verifying-your-logging-agent-deployment
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs                    *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will perform various logging related tasks using below commands.
+
+a1) kubectl logs
+a2) docker logs
+a3) journalctl
+
+
+NOTE:
+------
+a. To successfully finish this exercise, It is important to go through GCE Persistent Disk volume Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1: Deploy sample Pod:
+--------------------------
+a. Deploy a sample Pod which prints date (and time) every minute.
+
+Pod Name: pod-logs
+Image(s): Your prefer choice
+
+
+***************************************************************************************************
+
+
+TASK-2: Displaying Logs using "kubectl logs" command:
+-----------------------------------------------------
+
+NOTE: Perform below activities using "kubectl logs..." command on above "pod-logs" pod
+
+a. Dump pod logs (stdout)
+
+b. Stream pod logs (stdout) continously
+
+c. View logs which got generated in last 5 mins (h for hours)
+
+d. Display only most recent 20 lines of output in pod
+
+e. Save log output to a file
+
+f. Display logs from particular container inside the Pod
+
+
+***************************************************************************************************
+
+
+TASK-3: Display logs using Journalctl command:
+----------------------------------------------
+
+a. Display all log messages
+
+b. Display newest log entries first (Latest to Old order)
+
+c. Enable follow mode & display new messages as they come in
+
+d. Display specific number of RECENT log entries
+
+e. Display specific priority – “info”, “warning”, “err”, “crit”, “alert”, “emerg”
+
+f. Display log entries of only specific systemd unit
+
+g. Format output in “verbose”, “short”, “json” and more
+
+h. Combining options
+
+i. Display all messages between specific duration
+
+
+***************************************************************************************************
+
+
+TASK-4: Display logs using "docker logs.." command:
+---------------------------------------------------
+
+a. Identify the Worker nodes where Pods are running.
+
+b. Login to one that respecitve worker node.
+
+c. Display container Logs using "docker logs" command from respective worker node:
+
+d. Cross check same output using "kubectl logs" command on the respective Pod.
+
+
+***************************************************************************************************
+
+
+TASK-5: Display Cluster Component logs:
+----------------------------------------
+
+a. Display logs of apiserver-master 
+b. Display logs of controller-manager-master
+c. Display logs of scheduler-master 
+d. Display logs of etcd-master
+
+e. Display Logs of Docker on all nodes inside the cluster.
+f. Display logs of Kubelet on all nodes inside the cluster.
+
+
+***************************************************************************************************

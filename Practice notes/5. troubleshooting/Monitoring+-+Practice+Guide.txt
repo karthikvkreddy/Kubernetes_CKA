@@ -1,0 +1,131 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Monitoring | Kubernetes                                                                *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/           *
+* https://github.com/kubernetes-sigs/metrics-server                                               *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/           *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#top                     *
+* https://www.datadoghq.com/blog/how-to-collect-and-graph-kubernetes-metrics/                     *
+*                                                                                                 *
+***************************************************************************************************
+
+
+KNOW BEFORE YOU RUN:
+-------------------
+a. "kubectl top" command plays important role in monitoring Pods and containers resources such as CPU and Memory.
+b. To run "kubectl top..." we need to INSTALL "Metrics Server" on K8s cluster
+
+
+***************************************************************************************************
+
+0. PRE-REQ: Installing Metrics-Server (Required for "kubectl top" command)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+a. Download 
+------------
+git clone https://github.com/kubernetes-sigs/metrics-server.git
+
+
+b. Install 
+-----------
+kubectl apply -k metrics-server/manifests/test
+
+
+c. Validate 
+------------
+kubectl get deployment metrics-server -n kube-system 
+kubectl get pods -n kube-system | grep metrics
+kubectl get apiservices | grep metrics
+kubectl top pods
+kubectl top nodes
+
+Note: Give it a minute if nothing shows up in top command output.
+
+
+
+***************************************************************************************************
+
+
+1. NODEs: Ensure all nodes are "Healthy" and "Ready". Monitor its resource usage (CPU & Memory):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl run nginx-pod --image=nginx
+kubectl run redis-pod --image=redis
+
+kubectl top nodes
+kubectl top nodes --sorty-by cpu
+kubectl top nodes --sorty-by memory
+kubectl top nodes --sorty-by memory > mem-out.txt
+
+
+***************************************************************************************************
+
+
+2. PODs: Ensure all Pods are "Running" successfully and Monitor its resource usage (CPU & Memory):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In Current Namepsace:
+---------------------
+kubectl top pods
+kubectl top pods --sorty-by cpu
+kubectl top pods --sorty-by memory
+kubectl top pods --sorty-by memory > mem-out.txt
+
+In Specific NameSpace:
+----------------------
+kubectl top pods -n [NAME-SPACE]
+kubectl top pods -n [NAME-SPACE] --sorty-by cpu
+kubectl top pods -n [NAME-SPACE] --sorty-by memory
+kubectl top pods -n [NAME-SPACE] --sorty-by memory > mem-out.txt
+
+In Across Namespaces:
+---------------------
+kubectl top pods -A
+kubectl top pods -A --sorty-by cpu
+kubectl top pods -A --sorty-by memory
+kubectl top pods -A --sorty-by memory > mem-out.txt
+
+When Multi-Cotinaer Pod:
+------------------------
+kubectl top pod [POD-NAME] --containers
+
+
+
+***************************************************************************************************
+
+
+3. Cluster Compoents: Ensure all K8s Cluster Components are "Healthy" and "Running" status:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If Cluster configured with "Kubeadm"
+------------------------------------
+kubectl get pods -n kube-system   
+
+
+If cluster configured Manually (the hard-way)
+---------------------------------------------
+systemctl status kube-apiserver  
+systemctl status kube-controller-manager
+systemctl status kube-scheduler
+
+
+Ensure, following components are in "Running" status on all nodes including Master(Control-Plane) node.
+------------------------------------------------------------------------------------------------------
+systemctl status docker
+systemctl status kubelet
+
+
+***************************************************************************************************

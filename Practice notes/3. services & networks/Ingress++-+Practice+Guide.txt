@@ -1,0 +1,285 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Ingress | Kubernetes                                                                   *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Kubernetes                                            *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/services-networking/ingress/                                *
+* https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource           *
+* https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules                  *
+* https://kubernetes.io/docs/concepts/services-networking/ingress/#types-of-ingress               *
+* https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/                    *
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+READ BEFORE YOU PROCEED:
+------------------------
+
+A) In this lecture, we will be using "GKE" Cluster. Ingress Controller provides External IP address. 
+Having deploying on GKE cluster, it helps us automatically creating External IP provisioning.
+
+B) Before we deploy Ingress resource, we need to configure Ingress Controller. 
+Depending on your setup, you can choose your prefered method. In this example, I'm using Helm.
+
+c) There are multiple ways to install Ingress Controller. In this example, I'm using "Helm"
+Ensure you have "helm" installed before using.
+
+D) if you are running Kubernetes 1.19 and above, then use API version of Ingress as networking.k8s.io/v1
+In my case, GKE cluster is running with 1.18, so has to use extensions/v1beata1
+
+
+***************************************************************************************************
+
+
+1. Configure Ingress Controller (Using Helm):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+a) Install Ingress Controller:
+------------------------------
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+helm install ingress-nginx ingress-nginx/ingress-nginx
+
+
+b) Validate Ingress Controller:
+------------------------------
+
+kubectl get deploy | grep ingress
+
+kubectl get svc | grep ingress
+
+kubectl get pod | grep ingress
+
+kubectl get configmap | grep ingress
+
+kubetl get events
+
+
+==================================================================================================
+
+
+MY OUTPUTS:
+-----------
+srinathrchalla@cloudshell:~$ kubectl get deploy | grep ingress
+ingress-nginx-controller   1/1     1            1           35m
+
+srinathrchalla@cloudshell:~$ kubectl get svc | grep ingress
+ingress-nginx-controller             LoadBalancer   10.8.5.189   34.121.139.23   80:30335/TCP,443:30964/TCP   36m
+ingress-nginx-controller-admission   ClusterIP      10.8.15.53   <none>          443/TCP                      36m
+
+srinathrchalla@cloudshell:~$ kubectl get pod | grep ingress
+ingress-nginx-controller-f8df76cc4-j9kgg   1/1     Running   0          36m
+
+srinathrchalla@cloudshell:~$ kubectl get configmap | grep ingress
+ingress-controller-leader-nginx   0      36m
+ingress-nginx-controller          0      36m
+
+
+***************************************************************************************************
+
+
+2. Using Ingress to access Services:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-> First, will create two Pods and exposing these with services. 
+-> And then will create Ingress resource, which routes requests to these services.
+
+
+a). Pod-1 & Service-1 (Cat)
+---------------------------
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: cat-app
+  labels:
+    app: cat
+spec:
+  containers:
+    - name: cat-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=cat"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: cat-service
+spec:
+  selector:
+    app: cat
+  ports:
+    - port: 5678  #Default port for image
+
+
+=================================================================================
+
+
+b). Pod-2 & Service-2 (Dog)
+---------------------------	
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: dog-app
+  labels:
+    app: dog
+spec:
+  containers:
+    - name: dog-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=dog"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: dog-service
+spec:
+  selector:
+    app: dog
+  ports:
+    - port: 5678 # Default port for image
+	
+
+=================================================================================
+
+
+c). Ingress resource:
+--------------------
+
+NOTE:
+if running Kubernetes version 1.19 and above, use API version as networking.k8s.io/v1
+In my case, GKE is running with 1.17, so has to use extensions/v1beata1
+
+------------------
+
+apiVersion: extensions/v1beta1  
+kind: Ingress
+metadata:
+  name: test-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /cat
+          backend:
+            serviceName: cat-service
+            servicePort: 5678
+        - path: /dog
+          backend:
+            serviceName: dog-service
+            servicePort: 5678
+
+
+=================================================================================
+
+Deploying:
+---------- 
+kubectl apply -f cat.yaml
+kubectl apply -f dog.yaml
+kubectl apply -f ingress.yaml
+
+Displaing:
+----------
+kubectl get pods
+kubectl get svc
+kubectl get ingress
+
+Testing:
+--------
+
+NOTE: 
+a. You can open any webrowser and start access the putting external IP address of Ingress Controller, followed by path mentioned in the ingress resource.
+b. You can also curl as shown below.
+
+curl http://[EXTERNAL-IP-ADDRESS-OF-INGRESS-CONTROLLER]/cat
+curl http://[EXTERNAL-IP-ADDRESS-OF-INGRESS-CONTROLLER]/dog
+curl http://[EXTERNAL-IP-ADDRESS-OF-INGRESS-CONTROLLER]/wrong-request
+
+
+***************************************************************************************************
+
+
+MY OUTPUTS:
+-----------
+
+Deploying:
+---------- 
+srinathrchalla@cloudshell:~$ kubectl apply -f cat.yaml
+pod/cat-app created
+service/cat-service created
+
+srinathrchalla@cloudshell:~$ kubectl apply -f dog.yaml
+pod/dog-app created
+service/dog-service created
+
+srinathrchalla@cloudshell:~$ kubectl apply -f ingress.yaml
+ingress.extensions/example-ingress created
+
+
+Displaing:
+----------
+srinathrchalla@cloudshell:~$ kubectl get pods
+NAME                                       READY   STATUS    RESTARTS   AGE
+cat-app                                    1/1     Running   0          67s
+dog-app                                    1/1     Running   0          56s
+ingress-nginx-controller-f8df76cc4-j9kgg   1/1     Running   0          52m
+
+
+Testing:
+--------
+srinathrchalla@cloudshell:~$ kubectl get svc
+NAME                                 TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)                      AGE
+cat-service                          ClusterIP      10.8.9.71    <none>          5678/TCP                     76s
+dog-service                          ClusterIP      10.8.1.48    <none>          5678/TCP                     65s
+ingress-nginx-controller             LoadBalancer   10.8.5.189   34.121.139.23   80:30335/TCP,443:30964/TCP   53m
+ingress-nginx-controller-admission   ClusterIP      10.8.15.53   <none>          443/TCP                      53m
+kubernetes                           ClusterIP      10.8.0.1     <none>          443/TCP                      57m
+
+srinathrchalla@cloudshell:~$ kubectl get ingress
+NAME           HOSTS   ADDRESS         PORTS   AGE
+test-ingress   *       130.211.5.157   80      56s
+
+
+Testing:
+--------
+NOTE: You can open any webrowser and start access the putting external IP address of Ingress Controller, followed by path mentioned in the ingress resource.
+
+srinathrchalla@cloudshell:~$ curl http://34.121.139.23/cat
+cat
+
+srinathrchalla@cloudshell:~$ curl http://34.121.139.23/dog
+dog
+
+srinathrchalla@cloudshell:~$ curl http://34.121.139.23/wrong-request
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+srinathrchalla@cloudshell:~$
+
+***************************************************************************************************
+

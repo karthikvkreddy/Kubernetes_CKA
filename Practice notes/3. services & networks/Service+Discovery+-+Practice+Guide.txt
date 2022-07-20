@@ -1,0 +1,107 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Service Discovery | Kubernetes                                                         *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://cloud.google.com/kubernetes-engine/docs/concepts/service-discovery                      *
+* https://platform9.com/blog/kubernetes-service-discovery-principles-in-practice/                 *
+* https://github.com/kubernetes/dns/blob/master/docs/specification.md                             *
+* https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/                        *
+* https://www.digitalocean.com/community/tutorials/an-introduction-to-the-kubernetes-dns-service  *
+* https://sysdig.com/blog/understanding-how-kubernetes-services-dns-work/                         *  
+* https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns             *
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+First, we will deploy the sample application and expose it within kubernetes cluster using Cluster Service.
+Next, we will deploy testing pod from where we will discover the above Service from inside this test Pod.
+
+***************************************************************************************************
+
+
+1. Service Discovery through DNS:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+a. Deploy sample POD:
+---------------------
+kubectl run [POD-NAME] --image=[IMAGE-NAME] --port=80
+
+
+b. Expose above app by creating ClusterIP service
+-------------------------------------------------
+kubectl expose pod [POD-NAME]
+
+
+c. Find the Service created as expected
+---------------------------------------
+kubectl get svc 
+or
+kubectl get svc -A
+
+
+d. Validate Service Discover by deploying sample application
+------------------------------------------------------------
+kubectl run busybox --image=busybox:1.28 --rm --restart=OnFailure -ti -- /bin/nslookup [SERVICE-NAME]
+
+
+***************************************************************************************************
+
+
+2. End-to-End Testing (Example):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+[root@master ~]$ kubectl run nginx-pod --image=nginx --port=80
+pod/nginx-pod created
+
+[root@master ~]$ kubectl expose pod nginx-pod
+service/nginx-pod exposed
+
+[root@master ~]$ kubectl get svc
+NAME           TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+kubernetes     ClusterIP   10.8.0.1      <none>        443/TCP   8m24s
+nginx-pod      ClusterIP   10.8.13.206   <none>        80/TCP    18s
+
+[root@master ~]$ kubectl get svc -A
+NAMESPACE     NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)         AGE
+default       kubernetes             ClusterIP   10.8.0.1      <none>        443/TCP         8m32s
+default       nginx-pod              ClusterIP   10.8.13.206   <none>        80/TCP          26s
+kube-system   default-http-backend   NodePort    10.8.13.240   <none>        80:30534/TCP    8m17s
+kube-system   kube-dns               ClusterIP   10.8.0.10     <none>        53/UDP,53/TCP   8m17s ****
+kube-system   metrics-server         ClusterIP   10.8.14.200   <none>        443/TCP         8m15s
+
+[root@master ~]$ kubectl run busybox --image=busybox:1.28 --rm --restart=OnFailure -ti
+If you don't see a command prompt, try pressing enter.
+/ # nslookup nginx-pod
+Server:    10.8.0.10
+Address 1: 10.8.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      nginx-pod
+Address 1: 10.8.13.206 nginx-pod.default.svc.cluster.local
+/ #
+/ # exit
+pod "busybox" deleted
+
+[root@master ~]$ kubectl run busybox --image=busybox:1.28 --rm --restart=OnFailure -ti -- /bin/nslookup nginx-pod > nginx-svc-out.txt
+
+[root@master ~]$ cat nginx-svc-out.txt
+Server:    10.8.0.10
+Address 1: 10.8.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      nginx-pod
+Address 1: 10.8.13.206 nginx-pod.default.svc.cluster.local
+pod "busybox" deleted
+[root@master ~]$

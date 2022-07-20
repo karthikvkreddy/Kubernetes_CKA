@@ -1,0 +1,103 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Configuring Pod to use Persistent Storage (PV & PVC)                                   *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/                                 *
+* https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolumeclaim
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes              *
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims          *
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode                     *
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes                    *
+* https://kubernetes.io/docs/concepts/storage/persistent-volumes/#reclaim-policy                  *
+*                                                                                                 *
+***************************************************************************************************
+
+
+In this Exercise:
+-----------------
+a. You will create the PV with hostPath as volume type
+b. Then you will create PVC and use that in Pod.
+c. Finall will validate the same.
+
+NOTE:
+-----
+a. To successfully finish this exercise, It is important to go through GCE Persistent Disk volume Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1. Creating Persistent Volume (PV)
+----------------------------------------
+a. Create the PV with below configuration
+
+Persistent Volume Name: task-pv-volume
+Storage Capacity: 10Gi
+AccessModes: ReadWriteOnce
+HostPath Path: /mnt/data
+
+
+***************************************************************************************************
+
+
+TASK-2. Creating Persistent Volume Claim (PVC)
+-----------------------------------------------
+a. Create the PVC which shall use above PV
+
+PVC Name: task-pvc-volume
+Storage Capacity: 10Gi
+AccessModes: ReadWriteOnce
+
+
+***************************************************************************************************
+
+
+TASK-3. Deploying Pod with PVC:
+--------------------------------
+a. Create a sample Pod with above PVC
+
+
+***************************************************************************************************
+
+
+TASK-4. Display:
+----------------
+a. Display PV. Ensure it is bounded to task-pvc-volume. And the size is 10Gi
+b. Display PVC. Ensure it is bounded to task-pv-volume
+c. Display Pods with compelte details. Ensure to see the volume details as per configuration
+
+
+***************************************************************************************************
+
+
+TASK-5. Validate:
+-----------------
+
+a. Identify the node where this Pod is deployed:
+b. On above respective node create a sample file in the hostPath directory
+c. Now get inside the Pod, validate the file created in previous step. And create the test file from on this mount-path
+d. Identify file created in the previous step (c) from the respective worker node.
+
+
+***************************************************************************************************
+
+
+TASK-6. Cleanup:
+----------------
+a. Delete the Pod, PVC, and PV
+b. Ensure respective Pod, PVC, and PV is deleted successfully
+
+
+***************************************************************************************************
+

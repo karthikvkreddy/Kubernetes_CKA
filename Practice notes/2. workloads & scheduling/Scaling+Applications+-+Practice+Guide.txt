@@ -1,0 +1,56 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Scaling Applications (Deployment) | Kubernetes                                         *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment      *
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#scaling-your-application
+*                                                                                                 *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will deploy sample application, then we will increase the application instances using kubectl scale command. Finally, we will validate the same.
+
+***************************************************************************************************
+
+
+1. Creating Deployment "Imperatively" (from command line):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl create deployment NAME --image=[IMAGE-NAME] --replicas=[NUMBER]
+
+Ex:
+kubectl create deployment nginx-deploy --image=nginx --replicas=3
+
+***************************************************************************************************
+
+
+2. Scaling Deployment using "kubectl scale" command:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl scale deployment nginx-deploy --replicas=[NEW-REPLICA-COUNT]
+
+
+***************************************************************************************************
+
+
+3. Validate the Replica Count:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get deploy nginx-deploy 
+kubectl get rs nginx-deploy
+kubect get pods -o wide
+
+
+
+***************************************************************************************************

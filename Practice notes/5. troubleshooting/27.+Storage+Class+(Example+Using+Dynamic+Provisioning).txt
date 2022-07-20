@@ -1,0 +1,116 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Storage Class (sc)   - Dynamic Provisioning                                            *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/storage/storage-classes/                                    *
+* https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/                               *
+* https://kubernetes.io/blog/2017/03/dynamic-provisioning-and-storage-classes-kubernetes/         *
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+In this Exercise:
+--------------------
+You will create the Storate Class and test it by creating PVC from this Stroage Class and mount it inside the Pod.
+
+
+NOTE: 
+
+a. High likely, there is some issue with using Dynamic Provisioning on Kubernetes cluster configured with Kubeadm. For more details, please see the Demo notes.
+b. To successfully finish this exercise, It is important to go through Storage Class Concept and Demo videos in this series.
+c. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1. Display existing Storage Classes:
+-----------------------------------------
+a. Find the existing default Storage Class and review the compelte details of this Storage Class.
+
+
+***************************************************************************************************
+
+
+TASK-2. Create New Storage Class:
+---------------------------------
+a. Create new Storage Class with below configuration.
+
+Storage Class Name: gold-sc
+provisioner: kubernetes.io/gce-pd
+type: pd-ssd
+fsType: ext4
+reclaimPolicy: Retain
+
+
+***************************************************************************************************
+
+
+TASK-3. Create PVC with "Storage Class":
+----------------------------------------
+a. Create Persistent Volume Claim (PVC) which uses Storage Class (gold-sc)
+
+b. Display PVC. Ensure PVC automatically creates new PV in the backend and also it status as Bound
+
+
+***************************************************************************************************
+
+
+TASK-4. Deploying Pod with PVC:
+------------------------------
+a. Deploy sample Pod which uses PVC created in step#3.
+
+
+***************************************************************************************************
+
+TASK-5. Validate:
+-----------------
+a. Display Storage Class
+b. Display Persistent Volume (PVC) which got created automatically by PV. Ensure its size and it status is Bound
+c. Display Pod with complete details and ensure it is tied to PVC]
+d. Run the df command on this Pod and ensure above volume is successfully mounted
+e. Perform testing related to Persistent storage
+
+
+***************************************************************************************************
+
+
+TASK-6. Cleanup:
+----------------
+a. Delete the Pod, PVC and PV
+b. Since above storage class has "retain" reclaim policy, we need to manually delete the Disk from Google Cloud dashboard
+c. Delete the backend storage disk (manually either using command or from dashboard)
+
+
+***************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

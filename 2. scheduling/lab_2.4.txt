@@ -1,0 +1,49 @@
+1. how many labels in a node node01 ?
+    >> kubectl get nodes <node_name> --show-labels
+2. set labeb to node01 with clour=blue
+    >> kubectl label nodes node01 colour=blue
+3. Create a new deployment named blue with the nginx image and 3 replicas.
+    >> kubectl create deployment blue --image=nginx --replicas=3
+4. Which nodes can the pods for the blue deployment be placed on?
+    >> both control pane and node01 , coz no rule is set 
+5. Set Node Affinity to the deployment to place the pods on node01 only.
+    >> kubectl create deployment blue --image=nginx --replicas=3
+
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+        name: blue
+        spec:
+        replicas: 3
+        selector:
+            matchLabels:
+            run: nginx
+        template:
+            metadata:
+            labels:
+                run: nginx
+            spec:
+            containers:
+            - image: nginx
+                imagePullPolicy: Always
+                name: nginx
+            affinity:
+                nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                    - matchExpressions:
+                    - key: color
+                        operator: In
+                        values:
+                        - blue
+    --------o/p-----
+    Name: blue
+    Replicas: 3
+    Image: nginx
+    NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution
+    Key: color
+    values: blue
+
+6. Which nodes are the pods placed on now?
+7. now create a deployment with another key that will allow pods to be deployed in master nodes ?
+    >>hint check master node labels and use this key in deployment 

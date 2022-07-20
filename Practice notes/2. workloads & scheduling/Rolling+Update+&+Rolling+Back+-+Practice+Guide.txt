@@ -1,0 +1,130 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Rolling Update & Rolling Back  (Deployment ) | Kubernetes                            *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://cloud.google.com/kubernetes-engine/docs/how-to/updating-apps                            *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#checking-rollout-history-of-a-deployment
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-to-a-previous-revision
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will create deploy sample application. Next we will update deployment by setting new Image version.
+What if we incorrectly put Image version? we will rollout. You will also learn about rolling back.
+
+***************************************************************************************************
+
+
+1. Creating Deployment "Imperatively" (from command line):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl create deployment NAME --image=[IMAGE-NAME] --replicas=[NUMBER]
+
+EX: 
+kubectl create deployment nginx-deploy --image=nginx:1.18 --replicas=4
+
+
+***************************************************************************************************
+
+
+2. Upgrading Deployment with new Image:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl set image deploy [DEPLOYMENT-NAME] [CONTAINER-NAME]=[CONTAINER-IMAGE]:[TAG] --record
+
+EX: 
+kubectl set image deploy nginx-deploy nginx=nginx:1.91 --record
+
+
+***************************************************************************************************
+
+
+3. Checking Rollout Status:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl rollout status deploy [DEPLOYMENT-NAME]
+
+EX: 
+
+kubectl rollout status deploy nginx-deploy
+Waiting for deployment "nginx-deploy" rollout to finish: 2 out of 4 new replicas have been updated...
+
+NOTE: There is some issue. To dig deep, let's check rollout history.
+
+
+***************************************************************************************************
+
+
+4. Checking Rollout History:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl rollout history deploy [DEPLOYMENT-NAME]
+
+# EX: 
+# root@master:~# kubectl rollout history deploy nginx-deploy
+# deployment.apps/nginx-deploy
+# REVISION  CHANGE-CAUSE
+# 1         kubectl set image deploy nginx-deploy nginx-container=nginx:1.91 --record=true
+# 2         kubectl set image deploy nginx-deploy nginx=nginx:1.91 --record=true
+
+# NOTE: From the output, you can see the commands that are run previously. 
+# If you notice, Image tag we used is 1.91 instead of 1.19. Let's rollback!
+
+# You can confirm the same from by running
+
+kubectl get deploy nginx-deploy -o wide
+
+
+***************************************************************************************************
+
+
+4. Doing previous rollout "undo":
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl rollout undo deployment/[DEPLOYMENT-NAME]
+(OR)
+kubectl rollout undo deployment [DEPLOYMENT-NAME] --to-revision=[DESIRED-REVISION-NUMBER]
+
+kubectl rollout status deployment/[DEPLOYMENT-NAME]
+
+kubectl get deploy [DEPLOYMENT-NAME] -o wide
+
+
+***************************************************************************************************
+
+
+5. Doing Rollout with correct Image version: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl set image deploy [DEPLOYMENT-NAME] [CONTAINER-NAME]=[CONTAINER-IMAGE]:[TAG] --record
+
+kubectl rollout status deploy [DEPLOYMENT-NAME]
+
+kubectl get deploy [DEPLOYMENT-NAME] -o wide
+
+
+
+***************************************************************************************************
+
+
+
+
+
+
+
+

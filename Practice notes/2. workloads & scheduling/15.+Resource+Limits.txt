@@ -1,0 +1,77 @@
+***************************************************************************************************
+*                                                                                                 *
+* Exercise: Resource Limits | Kubernetes                                                          *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/configuration/manage-resources-containers                   *
+* https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/                *
+* https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/                   *
+* https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
+* https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-resource-requests-and-limits
+* https://medium.com/@betz.mark/understanding-resource-limits-in-kubernetes-memory-6b41e9a955f9   *
+* https://medium.com/@betz.mark/understanding-resource-limits-in-kubernetes-cpu-time-9eff74d3161b *
+*                                                                                                 *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+--------------------
+a. You will create a Pod with one Container. 
+b. This Container will be configured with memory request of 100 MiB and a memory limit of 200 MiB. 
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through Resource Limits Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+TASK-1: Display current resource usages:
+----------------------------------------
+a. Display current usage of Memory and CPU of each node within the cluster. You can do that by running ...top... command
+
+
+***************************************************************************************************
+
+
+TAKS-2: Configure Container which require minimum CPU and Memory resources:
+---------------------------------------------------------------------------
+a. Create a sample Pod which require Minimum CPU and Memory as mentioned below for a Container inside the Pod.
+
+Requests:
+--------
+CPU: 0.5
+Memory: 256Mi
+
+
+***************************************************************************************************
+
+
+TAKS-3: Validate:
+-----------------
+a. Display current usage of Memory and CPU of the node where the above Pod is deployed. Then cross check with usage stats from the "TASK-1"
+
+
+***************************************************************************************************
+
+
+TAKS-4: Delete:
+-----------------
+a. Delete the Pod.
+b. Ensure Pod is deleted
+c. Display resource usages of the nodes. Note the difference from TASK-3. 
+
+
+
+***************************************************************************************************
+

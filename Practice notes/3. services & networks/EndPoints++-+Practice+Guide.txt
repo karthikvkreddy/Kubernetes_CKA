@@ -1,0 +1,96 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: EndPoints | Kubernetes                                                                 *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/          *
+* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/   *
+* https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker              *
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+We will create the sample Deployment with three replicas.
+Meaning, this deployment will create three replicas of Pod instances.
+Each pod will get unique IP address. When we expose this Pod using Service object, it creates EndPoints with this Pod IPs that are back this Service.
+
+***************************************************************************************************
+
+1. Practice Exercise: Deploy sample application, then expose and ensure it creates respetive endpoints
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+a. Create Sample Deployment:
+----------------------------
+kubectl create deployment [DEPLOYMENT-NAME] --image=nginx --replicas=3 --port=80
+
+
+b. Expose the Deployment:
+-------------------------
+kubectl expose deploy [DEPLOYMENT-NAME]
+
+
+c. Validate the Service:
+------------------------
+kubectl get svc | grep [DEPLOYMENT-NAME]
+
+
+d. Validate the Pods:
+---------------------
+kubectl get pods -o wide | grep [DEPLOYMENT-NAME]
+
+
+e. Ensure respective EndPoint IPs matches with respective number of Pods and It's IPs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get ep
+
+
+***************************************************************************************************
+
+
+2. Solution: Deploy sample application, then expose and ensure it creates respetive endpoints:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+root@master:~# kubectl create deployment test-deploy --image=nginx --replicas=3 --port=80
+deployment.apps/test-deploy created
+root@master:~#
+
+root@master:~# kubectl expose deploy test-deploy
+service/test-deploy exposed
+root@master:~#
+
+root@master:~# kubectl get svc | grep test-deploy
+test-deploy    ClusterIP   10.105.64.47    <none>        80/TCP         49s
+root@master:~#
+
+root@master:~# kubectl get pods -o wide | grep test-deploy
+test-deploy-7955784f5c-bq9wz    1/1     Running   0          103s   10.44.0.10   worker   <none>           <none>
+test-deploy-7955784f5c-gj98x    1/1     Running   0          103s   10.44.0.12   worker   <none>           <none>
+test-deploy-7955784f5c-t7b67    1/1     Running   0          103s   10.44.0.11   worker   <none>           <none>
+root@master:~#
+
+root@master:~# kubectl get ep
+NAME           ENDPOINTS                                   AGE
+kubernetes     10.128.0.4:6443                             8d
+nginx-deploy   10.44.0.8:80                                54m
+test-deploy    10.44.0.10:80,10.44.0.11:80,10.44.0.12:80   59s
+test-svc       10.44.0.5:80,10.44.0.6:80,10.44.0.7:80      94m
+root@master:~#
+
+root@master:~# kubectl get ep | grep test-deploy
+test-deploy    10.44.0.10:80,10.44.0.11:80,10.44.0.12:80   76s
+root@master:~#
+
+
+***************************************************************************************************

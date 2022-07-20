@@ -1,0 +1,177 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Storage Class (sc)   - Dynamic Provisioning                                            *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/storage/storage-classes/                                    *
+* https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/                               *
+* https://kubernetes.io/blog/2017/03/dynamic-provisioning-and-storage-classes-kubernetes/         *
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+READ BEFORE YOU RUN:
+--------------------
+
+NOTE: High likely, there is some issue with using Dynamic Provisioning on Kubernetes cluster configured with Kubeadm. From little bit of Google, tells that, we need to create Service Account, then manually edit the kubelet from this post. 
+
+ERROR: From the output of "kubectl describe pvc [PVC-NAME]"
+ Warning  ProvisioningFailed  31s (x3 over 2m28s)  persistentvolume-controller  Failed to provision volume with StorageClass "fast": failed to get GCE GCECloudProvider with error <nil>
+
+https://stackoverflow.com/questions/50100219/kubernetes-failed-to-get-gce-gcecloudprovider-with-error-nil
+
+NOW:
+----
+Goal of this video is how to create Storage Class and use Dynamic Provisioning. This works perfectly in GKE. Will run this Demo on GKE.
+
+a. First, we will create the Storage Class. 
+b. Then, we will test it by deploying PVC using above Storage Class. This will automatically create PV.
+c. Finally, we will deploy Pod which consumes this PVC
+
+Storage Class --> PVC --> Pod
+
+***************************************************************************************************
+
+1. Creating Storage Class:
+--------------------------
+
+1a. First, notice the the default and exisiting storage class(es) in the cluster
+------------------------------------------------------------------------------
+kubectl get sc
+
+
+1b. Create "new" Storage Class
+-----------------------------
+# sc-ssd.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-sc
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  fsType: ext4
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+
+1c. Deploy:
+-----------
+kubectl apply -f sc-ssd.yaml
+
+
+1d. Validate status of new Storage Class
+---------------------------------------
+kubectl get sc
+
+
+***************************************************************************************************
+
+
+2. Create PVC which uses above "Storage Class"
+---------------------------------------------
+
+2a. PVC YAML file
+-----------------
+# pvc-ssd.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fast-pvc
+spec:
+  storageClassName: fast-sc  #Using Storage Class created in step-1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+2b. Deploy:
+-----------
+kubectl apply -f pvc-ssd.yaml
+
+2b. Display PVC. Ensure PVC automatically creates new PV in the backend and also it status as Bound
+---------------------------------------------------------------------------------------------------
+kubectl get pvc
+kubectl get pv
+
+
+***************************************************************************************************
+
+
+3. Deploying Pod with PVC
+-------------------------
+# task-sc-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fast-pod
+spec:
+  volumes:
+    - name: task-sc-storage
+      persistentVolumeClaim:
+        claimName: fast-pvc
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-sc-storage
+
+
+Deploy and Validate:
+-------------------
+kubectl apply -f task-sc-pod.yaml
+kubectl get pod task-sc-pod
+
+kubectl exec fast-pod -- df
+
+
+***************************************************************************************************
+
+
+4. Cleanup
+-----------
+kubectl delete -f fast-pod.yaml
+kubectl delete -f fast-pvc.yaml
+kubectl delete -f [PV-NAME]
+
+Since above storage class has "retain" reclaim policy, we need to manually delete the Disk from Google Cloud dashboard
+
+kubectl delete -f sc-ssd.yaml
+
+
+***************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,164 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Pod | Kubernetes                                                                       *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* References:                                                                                     *
+* -----------                                                                                     *
+* https://kubernetes.io/docs/concepts/workloads/pods/                                             *
+* https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/                               *
+* https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/                            *
+* https://kubernetes.io/docs/tasks/configure-pod-container/                                       *
+* https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/ *
+***************************************************************************************************
+
+In This Demo:
+-------------
+We will deploy the sample Pod and perform various operations that we use everyday.
+
+
+***************************************************************************************************
+
+
+1. Pod YAML with Environment Variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# nginx-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+    tier: dev
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.18
+    env:
+    - name: DEMO_GREETING
+      value: "Hello from the environment"
+    - name: DEMO_FAREWELL
+      value: "Such a sweet sorrow"
+
+
+
+***************************************************************************************************
+
+
+# 2. Deploy Pods
+~~~~~~~~~~~~~~~~~
+kubectl apply -f <FILENAME.YAML>
+(or) 
+kubectl create -f <FILENAME.YAML>
+
+
+***************************************************************************************************
+
+
+# 3. Display Pods
+~~~~~~~~~~~~~~~~~
+kubectl get pods
+kubectl get pods -o wide  # Print wide output of the Pod
+
+kubectl get pods -n <NAME-SPACE>     # Print Pods in particular NameSpace
+kubectl get pods -A                  # Print Pods in all namespace
+
+kubectl get pods <POD-NAME>
+kubectl get pods <POD-NAME> -o yaml  
+kubectl get pods <POD-NAME> -o json
+
+kubectl get pods --show-labels
+kubectl get pods -l app=nginx        # Print Pods with particular label
+
+
+***************************************************************************************************
+
+
+# 4. Print Details of Pod
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl describe pods <POD-NAME>     
+
+
+***************************************************************************************************
+
+
+# 5. Editing Pod which is running
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl edit pods <POD-NAME>
+kubectl describe pods nginx-pod | grep Image
+
+***************************************************************************************************
+
+
+# 6. Print Pod Logs
+~~~~~~~~~~~~~~~~~~~
+kubectl logs <POD-NAME>
+kubectl logs <POD-NAME> -n <NAME-SPACE>
+
+***************************************************************************************************
+
+
+# 7. Displaying Pods by Resource Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+NOTE: Metrics-Server
+~~~~~~~~~~~~~~~~~~~~
+a. To run below top commands, you need to have "Metrics-Server" Installed. 
+b. For step-by-step demo and instructions please refer to the "Installing Metrics Server" lecture & demos that you find in "Troubleshooting" section in this series.
+https://www.udemy.com/course/ultimate-cka-certified-kubernetes-administrator/learn/lecture/26854680#questions
+c. Again, below are the high-level steps.
+
+Installing Metrics-Server:
+--------------------------
+git clone https://github.com/kubernetes-sigs/metrics-server.git
+
+kubectl apply -k metrics-server/manifests/test/
+
+NOTE: If you encounter any Image error, try updating imagePullPolicy: Always 
+in metrics-server/manifests/test/patch.yaml
+
+Give it a minute to gather the data and then run below Top Commands:
+
+Top Command to find the CPU and Memory Usage of Pods, Nodes and Containers:
+---------------------------------------------------------------------------
+kubectl top pods
+kubectl top pods -A
+kubectl top pods -A --sort-by memory
+kubectl top pods -A --sort-by cpu
+kubectl top pods -n [name-space]  --sort-by cpu 
+kubectl top pods -n [name-space]  --sort-by memory
+kubectl top pods -n [name-space]  --sort-by memory > mem-usage.txt
+
+***************************************************************************************************
+
+
+# 8. Running operations directly on the YAML file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+SYNTAX: kubectl [OPERATION] –f [FILE-NAME.yaml]
+
+kubectl get –f [FILE-NAME.yaml]
+kubectl describe –f [FILE-NAME.yaml]
+kubectl edit –f [FILE-NAME.yaml]
+kubectl delete –f [FILE-NAME.yaml]
+kubectl apply –f [FILE-NAME.yaml]
+
+
+***************************************************************************************************
+
+
+# 9. Deleting Pod
+~~~~~~~~~~~~~~~~~
+kubectl delete pods <POD-NAME>
+
+
+***************************************************************************************************

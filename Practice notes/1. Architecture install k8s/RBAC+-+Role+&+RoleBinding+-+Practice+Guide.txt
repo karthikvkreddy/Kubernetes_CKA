@@ -1,0 +1,218 @@
+
+***************************************************************************************************
+*                                                                                                 *
+* Subject: RBAC - Role & RoleBinding                                                              *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/reference/access-authn-authz/authorization/                          *
+* https://kubernetes.io/docs/reference/access-authn-authz/rbac/                                   *
+* https://www.sumologic.com/glossary/role-based-access-control/                                   *
+* https://www.cncf.io/blog/2018/08/01/demystifying-rbac-in-kubernetes/                            *
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+a. First, we will create the test "user account" and "namespace" for testing this demo
+b. Then, We will create the Role with list of actions performed in a "specific namespace"
+c. And finally, We will assign this role to "user" by creating "RoleBinding"
+
+Note:
+----
+a. Role and RoleBindings are "Namespace" specific.
+b. You can assign Role to "Service Account" instead of user. For more details, please refer below link:
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+
+
+***************************************************************************************************
+
+
+1. Creating Kubernetes test User Account(appuser) (using x509 for testing RBAC)
+------------------------------------------------------------------------------
+
+# Generating Key
+openssl genrsa -out appuser.key 2048
+
+# Generaing Certificate Signing request (csr):
+openssl req -new -key appuser.key -out appuser.csr -subj "/CN=appuser"
+
+# Singing CSR using K8s Cluster "Certificate" and "Key"
+openssl x509 -req -in appuser.csr \
+        -CA /etc/kubernetes/pki/ca.crt \
+        -CAkey /etc/kubernetes/pki/ca.key \
+        -CAcreateserial \
+        -out appuser.crt -days 300
+
+# Adding user credentials to "kubeconfig" file
+kubectl config set-credentials appuser  --client-certificate=appuser.crt --client-key=appuser.key
+
+# Creating context for this user and associating it with our cluster:
+kubectl config set-context appuser-context --cluster=kubernetes --user=appuser
+
+# Displaying K8s Cluster Config
+kubectl config view
+
+
+***************************************************************************************************
+
+
+2. Creating Namespaces and Pod for testing RBAC:
+------------------------------------------------
+
+2a. Creating test Namespace:
+----------------------------
+kubectl create ns dev-ns
+
+................................................
+
+1b. Creating test Pod:
+----------------------
+kubectl run nginx-pod --image=nginx -n dev-ns
+kubectl get pods -n dev-ns
+
+................................................
+
+1c. Test Before Deploying:
+--------------------------
+kubectl get pods -n dev-ns --user=appuser 
+
+
+***************************************************************************************************
+
+
+2. Creating a "Role" & "RoleBinding":
+-------------------------------------
+
+2a. Creating Resources Declaratively (Using YAML):
+-------------------------------------------------
+# Role
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: dev-ns
+  name: pod-reader
+rules:
+- apiGroups: [""] 
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+# RoleBinding
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: read-pods
+  namespace: dev-ns
+subjects:
+- kind: User
+  name: appuser 
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role 
+  name: pod-reader 
+  apiGroup: rbac.authorization.k8s.io
+
+
+..........................................................................
+
+
+2b. Creating Resources Imperatively (Commands):
+-----------------------------------------------
+
+# role
+kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods --namespace=dev-ns
+
+# rolebinding
+kubectl create rolebinding read-pods --role=pod-reader --user=appuser --namespace=dev-ns
+
+
+***************************************************************************************************
+
+
+3. Display Role and RoleBinding:
+--------------------------------
+# role
+kubectl get role -n dev-ns
+
+# rolebinding
+kubectl get rolebinding -n dev-ns
+
+kubectl describe role -n dev-ns
+kubectl describe rolebinding -n dev-ns
+
+
+***************************************************************************************************
+
+
+4. Testing RBAC:
+----------------
+
+Pod Operations: get, list, watch - in "dev-ns" namespace:
+----------------------------------------------------------
+kubectl auth can-i get pods -n dev-ns --user=appuser
+kubectl auth can-i list pods -n dev-ns --user=appuser
+
+kubectl get pod nginx-pod -n dev-ns --user=appuser
+kubectl get pods -n dev-ns --user=appuser
+
+...........................................................................
+
+Pod Operations: get, list, watch - in "NON dev-ns" namespace:
+------------------------------------------------------------
+kubectl auth can-i get pods -n kube-system --user=appuser
+kubectl auth can-i list pods -n kube-system --user=appuser
+kubectl auth can-i watch pods -n kube-system --user=appuser
+
+kubectl get pods --user=appuser # queries default namespace
+kubectl get pods -n kube-system --user=appuser
+
+...........................................................................
+
+Creating Objects in "dev-ns" namespace: 
+----------------------------------------
+kubectl auth can-i create pods -n dev-ns --user=appuser
+kubectl auth can-i create services -n dev-ns --user=appuser
+kubectl auth can-i create deployments -n dev-ns --user=appuser
+
+kubectl run redis-pod -n dev-ns --image=redis --user=appuser
+kubectl create deploy redis-deploy -n dev-ns --image=redis --user=appuser
+
+...........................................................................
+
+
+Deleting Objects in "dev-ns" namespace: 
+----------------------------------------
+kubectl auth can-i delete pods -n dev-ns --user=appuser
+kubectl auth can-i delete services -n dev-ns --user=appuser
+kubectl auth can-i delete deployments -n dev-ns --user=appuser
+
+kubectl delete pods nginx-pod -n dev-ns --user=appuser
+
+
+***************************************************************************************************
+
+5. Cleanup:
+-----------
+kubectl config unset contexts.appuser-context
+kubectl config unset users.appuser
+
+kubectl config view
+
+kubectl get pod nginx-pod -n dev-ns --user=appuser
+kubectl get pods -n dev-ns --user=appuser
+
+kubectl delete role pod-reader -n dev-ns
+kubectl delete rolebinding read-pods -n dev-ns
+
+
+***************************************************************************************************

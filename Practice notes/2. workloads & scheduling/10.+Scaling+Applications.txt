@@ -1,0 +1,68 @@
+***************************************************************************************************
+*                                                                                                 *
+* EXERCISE: Scaling Applications (Deployment) | Kubernetes                                        *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment      *
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#scaling-your-application
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will deploy sample application, then you will scale-up and scale-down applications.
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through Deployment and Scaling Applications Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+STEP-1: Create Deployment:
+--------------------------
+a. Create Deployment with below configuration using "kubectl create..." command
+
+Deployment Name: nginx-deploy
+Container Image: nginx
+Replicas: 3
+
+***************************************************************************************************
+
+
+STEP-2: Scale-UP Deployments:
+-----------------------------
+a. Scale up "nginx-deploy" deployment from 3 to 5 replicas by running "...scale..." command
+b. Display "nginx-deploy" deployment and ensure "Ready" is 5/5.
+
+
+***************************************************************************************************
+
+STEP-3: Scale-DOWN Deployments:
+-------------------------------
+a. Scale-DOWN "nginx-deploy" deployment from 5 to 3 replicas by running "...scale..." command
+b. Display "nginx-deploy" deployment and ensure "Ready" is 3/3.
+
+
+***************************************************************************************************
+
+
+STEP-4: Delete the Deployment:
+------------------------------
+a. Delete the "nginx-deploy" deployment. 
+b. Display Deployment, ReplicaSet and Pods. Ensure "nginx-deploy" Deployemnt is related. Also related ReplicaSet and Pods
+
+
+***************************************************************************************************
+
+

@@ -1,0 +1,92 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Installing Metrics Server                                                              *
+*                                                                                                 *
+* Author: Srinath Challa | Kuberentes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/#metrics-server
+* https://github.com/kubernetes-sigs/metrics-server                                               *
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+We will install the Metrics Server. Metrics Server is responsible for gathering resource usages.
+
+
+***************************************************************************************************
+
+0. Pre-Req:
+-----------
+Check if your cluster is running with MetricsServer by running following commands
+
+kubectl top nodes
+
+kubectl top pods
+
+kubectl get pods -n kube-system | grep -i metrics
+
+If not, go ahead with below steps. 
+
+
+***************************************************************************************************
+
+1. Download:
+------------
+
+git clone https://github.com/kubernetes-sigs/metrics-server.git
+
+
+***************************************************************************************************
+
+2. Installing Metrics Server:
+-----------------------------
+
+kubectl apply -k metrics-server/manifests/test
+
+Give it a minute to gather the data and run this command.
+
+kubectl get pods -n kube-system | grep -i metrics
+
+-----------------
+# Troubleshooting:
+
+If you encounter any Image error, try updating imagePullPolicy from "Never" to "Always
+in metrics-server/manifests/test/patch.yaml
+
+kubectl delete -k metrics-server/manifests/test
+
+vim metrics-server/manifests/test/patch.yaml
+#Then update "imagePullPolicy" from "Never" to "Always" - imagePullPolicy: Always  
+
+kubectl apply -k metrics-server/manifests/test
+
+kubectl get pods -n kube-system | grep -i metrics
+
+
+***************************************************************************************************
+
+3. Validate:
+------------
+
+kubectl get deployment metrics-server -n kube-system 
+kubectl get apiservices | grep metrics
+kubectl get apiservices | grep metrics
+kubectl top pods
+kubectl top nodes
+
+Note: Give it a minute if nothing shows up in top command output. 
+
+
+***************************************************************************************************
+

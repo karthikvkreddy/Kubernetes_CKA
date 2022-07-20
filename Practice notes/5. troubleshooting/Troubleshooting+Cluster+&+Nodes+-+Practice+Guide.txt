@@ -1,0 +1,118 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Troubleshooting K8s Cluster                                                            *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/                       *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/                       *
+* https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/08-bootstrapping-kubernetes-controllers.md
+*                                                                                                 *
+***************************************************************************************************
+
+***************************************************************************************************
+
+1. Troubleshooting Cluster and Nodes:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Check:
+------
+kubectl get nodes
+kubectl top node 
+
+
+Possible Solutions:
+-------------------
+Please refer to below link for more details.
+https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/
+
+
+***************************************************************************************************
+
+
+2. Troubleshooting Components
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2a. If cluster configured with "kubeadm"
+-------------------------------------------
+
+Check:
+------
+kubectl get pods -n kube-system
+systemctl status kubelet
+systemctl status docker
+
+Troubleshoot:
+-------------
+kubectl logs kube-apiserver-master -n kube-system
+kubectl logs kube-scheduler-master -n kube-system
+kubectl logs kube-controller-manager-master -n kube-system
+kubectl logs etcd-master -n kube-system
+
+Possible Solutions(NOTE: Does not covered all):
+-----------------------------------------------
+Kubelet:
+systemctl enable kubelet  #Run it on all nodes (Including worker nodes)
+systemctl start kubelet   #Run it on all nodes (Including worker nodes)
+
+Docker:
+systemctl enable docker   #Run it on all nodes (Including worker nodes)
+systemctl start docker    #Run it on all nodes (Including worker nodes)
+
+
+===================================================================================================
+
+
+2b. If cluster configured with "Manual (Hard-way)"
+-----------------------------------------------
+
+Check
+-----
+systemctl status kube-apiserver
+systemctl status kube-controller-manager 
+systemctl status kube-scheduler 
+systemctl status etcd
+
+systemctl status kubelet # Run it on all nodes (Including worker nodes)
+systemctl status docker  # Run it on all nodes (Including worker nodes)
+
+
+Troubleshoot
+------------
+journalctl –u kube-apiserver 
+journalctl –u kube-scheduler
+journalctl –u etcd
+journalctl –u kube-controller-manager 
+journalctl –u kube-proxy
+journalctl –u docker
+journalctl –u kubelet
+
+
+Possible Solutions(NOTE: Does not covered all):
+------------------------------------------------
+systemctl enable kube-apiserver kube-controller-manager kube-scheduler etcd
+systemctl start kube-apiserver kube-controller-manager kube-scheduler etcd
+
+Kubelet:
+systemctl enable kubelet  #Run it on all nodes (Including worker nodes)
+systemctl start kubelet   #Run it on all nodes (Including worker nodes)
+
+Docker:
+systemctl enable docker   #Run it on all nodes (Including worker nodes)
+systemctl start docker    #Run it on all nodes (Including worker nodes)
+
+
+***************************************************************************************************
+
+
+

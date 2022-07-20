@@ -1,0 +1,47 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Troubleshooting Cluster                                                                *
+*                                                                                                 *
+* Author: Srinath Challa | Ultimate CKA & Ultimate CKAD                                           *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/                       *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/                       *
+* https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/08-bootstrapping-kubernetes-controllers.md
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will Identify the issue and solve it accordingly
+
+NOTE:
+a. To successfully finish this exercise, It is important to go through Troubleshooting Cluster concept and demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1. Troubleshooting Cluster Components:
+-------------------------------------------
+a. Ensure all the nodes inside the cluster are "Running" successfully.
+
+b. Login to one of the worker node. And stop the "kubelet"
+
+c. Wait for few mins.
+
+d. Now, goto Master(Control-Plane node) and ensure is all nodes are in "Ready". 
+
+e. If any of the node shows "NotReady", then do Identify the issue and get that node into "Ready" status.
+
+
+***************************************************************************************************
+

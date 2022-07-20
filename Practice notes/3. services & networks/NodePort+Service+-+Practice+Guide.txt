@@ -1,0 +1,164 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Services & NodePort Service | Kubernetes                                               *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/services-networking/service/                                *
+* https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/                     *
+* https://medium.com/google-cloud/understanding-kubernetes-networking-services-f0cb48e4cc82       *
+* https://medium.com/google-cloud/kubernetes-nodeport-vs-loadbalancer-vs-ingress-when-should-i-use-what-922f010849e0
+*                                                                                                 *
+* NodePort Service:                                                                               *
+* ------------------                                                                              *
+* https://kubernetes.io/docs/concepts/services-networking/service/#nodeport                       *
+* https://kubernetes.io/docs/tasks/access-application-cluster/service-access-application-cluster/ *
+* https://cloud.ibm.com/docs/containers?topic=containers-nodeport                                 *
+* https://cloud.google.com/kubernetes-engine/docs/how-to/exposing-apps                            *
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+-------------
+We will create the sample deployment and expose it using nodePort service. Finally we will test it!
+
+***************************************************************************************************
+
+1. Creating Sample Deployment and Service "Declaratively (Using YAML file)":
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+a) Deployment YAML file:
+------------------------
+# nginx-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.18
+        ports:
+        - containerPort: 80
+
+
+b) NodePort Service YAML file:
+------------------------------
+# Service
+# nginx-svc-np.yaml
+apiVersion: v1
+kind: Service	
+metadata:
+  name: my-service
+  labels:
+    app: nginx-app
+spec:
+  selector:
+    app: nginx-app
+  type: NodePort
+  ports:
+  - nodePort: 31111
+    port: 80
+    targetPort: 80
+
+
+c) Deploying Applications:
+--------------------------
+kubectl apply -f nginx-deploy.yaml
+kubectl apply -f nginx-svc-np.yaml
+
+
+***************************************************************************************************
+
+
+2. Creating Deployment and NodePort Service Application "Imperatively (From Command promp)":
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deployment:
+-----------
+kubectl create deployment [DEPLOYMENT-NAME] --image=[CONTAINER-IMAGE]--replicas=[REPLICA-COUNT]
+
+
+Service:
+--------
+kubectl expose deployment [DEPLOYMENT-NAME] --type=NodePort --name=[SERVICE-NAME] --port=[PORT-NUMBER]
+
+
+
+***************************************************************************************************
+
+
+3. End-to-End Testing:
+~~~~~~~~~~~~~~~~~~~~~~
+NOTE-1: Before you test, please sure ensure you have created two network rules and assigned to nodes accordingly.
+Firewall Rules: 
+For Master Node: TCP Ingress with Ports - 2379, 6443, 10250, 10251, 10252
+For Woker Nodes: TCP Ingress with Ports - 10250, 30000-32767
+
+
+a. Create Sample Deployment
+---------------------------
+kubectl create deployment test --image=nginx --replicas=3
+
+b. Next, expose the previous Deployment:
+-----------------------------------------
+kubectl expose deployment test --type=NodePort --name=test-svc --port=80
+
+c. Now, get the NodePort service number on which this service is exposed on:
+-----------------------------------------------------------------------------
+kubectl get svc
+
+d. Next, get the external IP address of the worker node on which this Pod is running
+-------------------------------------------------------------------------------------
+kubectl get pods -o wide
+
+e. Then, you can open the any browser or execute curl command as mentioned below.
+The syntax is the external IP of the worker node followed by nodePort number
+-----------------------------------------------------------------------------
+
+root@master:~# curl http://35.224.90.242:31506/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+
+
+
+***************************************************************************************************
+
+4. Cleanup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl delete deploy [NAME]
+kubectl delete svc [NAME]
+
+***************************************************************************************************
+
+

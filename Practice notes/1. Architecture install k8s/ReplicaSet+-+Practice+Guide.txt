@@ -1,0 +1,123 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: ReplicaSet | Kubernetes                                                                *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/                *
+* https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#how-a-replicaset-works    *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will deploy the sample ReplicaSet, then Validate, Scale, Edit and Cleanup.
+
+***************************************************************************************************
+
+# frontend.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
+
+
+***************************************************************************************************
+
+
+# 2. Deploy ReplicaSet
+-----------------------
+kubectl apply -f <FILENAME.YAML>
+or 
+kubectl create -f <FILENAME.YAML>
+
+***************************************************************************************************
+
+# 3. Display ReplicaSet (rs)
+----------------------------
+kubectl get rs 
+kubectl get rs <RS-NAME> -o wide
+kubectl get rs <RS-NAME> -o yaml
+kubectl get rs -l <LABEL>     
+
+
+***************************************************************************************************
+
+# 4. Displaying Pods 
+---------------------
+kubectl get pods
+kubectl get pods -l <LABEL>  
+
+***************************************************************************************************
+
+
+# 5. Print Details of ReplicaSet
+--------------------------------
+kubectl describe rs <RS-NAME>
+
+
+***************************************************************************************************
+
+
+# 6. Scaling Applications
+-------------------------
+kubectl scale rs <RS-NAME> --replicas=[COUNT]     
+
+
+***************************************************************************************************
+
+
+# 7. Editing ReplicaSet
+-----------------------
+kubectl edit rs <RS-NAME>      
+
+
+***************************************************************************************************
+
+
+# 8. Running operations directly on the YAML file
+--------------------------------------------------
+SYNTAX: kubectl [OPERATION] –f [FILE-NAME.yaml]
+
+kubectl get –f [FILE-NAME.yaml]
+kubectl describe –f [FILE-NAME.yaml]
+kubectl edit –f [FILE-NAME.yaml]
+kubectl delete –f [FILE-NAME.yaml]
+kubectl create –f [FILE-NAME.yaml]
+
+
+***************************************************************************************************
+
+
+# 9. Deleting ReplicaSet
+-------------------------
+kubectl delete rs <RS-NAME>
+
+
+***************************************************************************************************

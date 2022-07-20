@@ -1,0 +1,76 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: HostPath | Storage | Kubernetes                                                        *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/storage/volumes/#hostpath                                   *
+* https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-configuration-example             *
+* https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/   *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will create a Pod with HostPath volume. And test it!
+
+
+NOTE:
+-----
+a. To successfully finish this exercise, It is important to go through HostPath volume Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+TASK-1: Create Pod with HostPath Volume:
+----------------------------------------
+a. Create a Pod with HostPath volume below Configuration
+
+Pod Name: nginx-pod
+Container Image: nginx
+Volume Name: hp-vol
+Path: /test-vol
+Mount Path: /test-mnt
+
+
+***************************************************************************************************
+
+
+TASK-2: Display:
+----------------
+a. Display Pod with Complete details. Ensure to see HostPath volume details in the output
+b. Run "df" command on the "nginx-pod" to ensure you see /test-mnt mount path
+
+
+***************************************************************************************************
+
+
+TASK-3: Testing:
+----------------
+a. First, from host, create the file on the host-path on the worker node where this pod is running.
+b. Next, login to the Pod and create the test file on the host-path directory from inside the Pod.
+c. Finally, from Host, validate the file created in previous step from the worker node.
+
+
+***************************************************************************************************
+
+
+TASK-4: Cleanup
+---------------
+a. Delete the Pod
+b. Ensure Pod is deleted.
+c. Ensure, the files created in above TASK#3 are still available on the host-Path on the respective worker node
+
+
+***************************************************************************************************
+

@@ -1,0 +1,11 @@
+1. Creating kubernetes cluster using VMS on vitualbox:
+
+	https://medium.com/swlh/setup-own-kubernetes-cluster-via-virtualbox-99a82605bfcc
+	https://github.com/mbaykara/k8s-cluster
+
+	Troubershoot:
+		https://medium.com/@brokedba/fixes-for-virtualbox-errors-due-to-latest-windows-10-updates-121028ad3670
+
+
+
+

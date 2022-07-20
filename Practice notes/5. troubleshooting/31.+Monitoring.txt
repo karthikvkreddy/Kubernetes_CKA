@@ -1,0 +1,106 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Monitoring | Kubernetes                                                                *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/           *
+* https://github.com/kubernetes-sigs/metrics-server                                               *
+* https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/           *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#top                     *
+* https://www.datadoghq.com/blog/how-to-collect-and-graph-kubernetes-metrics/                     *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+a. You will perform tasks to monitor resources such as "CPU" and "Memory" of Nodes and Pods using "kubectl top.." command.
+
+
+NOTE:
+-----
+a. To successfully finish this exercise, It is important to go through Monitoring Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+c. To run "kubectl top..." we need to install "Metrics Server" on K8s cluster
+
+
+***************************************************************************************************
+
+
+TASK-1: Metrics-server:
+-----------------------
+a. Ensure "Metrics-Server" is installed and running successfully.
+
+
+***************************************************************************************************
+
+
+TASK-2: Monitoring NODEs: 
+-------------------------
+a. Ensure all nodes are "Healthy" and in "Ready" status.
+b. Display CPU and Memory usage of nodes
+c. Display CPU and Memory usage of nodes and then sort by CPU
+d. Display CPU and Memory usage of nodes and then sort by Memory
+e. Display CPU and Memory usage of nodes, then sort by Memory. Save this output to a file.
+
+
+
+***************************************************************************************************
+
+
+TASK-3: Monitoring Pods:
+-------------------------
+a. Ensure all Pods are "Running" status
+
+
+In Current Namepsace:
+---------------------
+a. Display CPU and Memory usage of Pods
+b. Display CPU and Memory usage of Pods and then sort by CPU
+c. Display CPU and Memory usage of Pods and then sort by Memory
+d. Display CPU and Memory usage of Pods, then sort by Memory. Save this output to a file.
+
+In "kube-system" Namespace:
+---------------------------
+a. Display CPU and Memory usage of Pods in kube-system namespace
+b. Display CPU and Memory usage of Pods in kube-system namespace and then sort by CPU
+c. Display CPU and Memory usage of Pods in kube-system namespace and then sort by Memory
+d. Display CPU and Memory usage of Pods in kube-system namespace, then sort by Memory. Save this output to a file.
+
+
+Across All Namespaces:
+---------------------
+a. Display CPU and Memory usage of Pods across all Namespaces
+b. Display CPU and Memory usage of Pods across all Namespaces and then sort by CPU
+c. Display CPU and Memory usage of Pods across all Namespaces and then sort by Memory
+d. Display CPU and Memory usage of Pods across all Namespaces, then sort by Memory. Save this output to a file.
+
+
+
+***************************************************************************************************
+
+
+TASK-4. Monitoring Cluster Compoents: 
+-------------------------------------
+
+a. Ensure "API Server" is "Running" successfully
+b. Ensure "Scheduler" is "Running" successfully
+c. Ensure "ETCD" is "Running" successfully
+d. Ensure "Controller-Manager" is "Running" successfully
+
+e. Ensure "docker" is "Running" successfully on all nodes inside cluster
+f. Ensure "kubelet" is "Running" successfully on all nodes inside cluster
+
+
+***************************************************************************************************
+
+
